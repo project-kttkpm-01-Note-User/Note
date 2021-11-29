@@ -1,0 +1,14 @@
+resilience4j:
+  retry:
+    instances:
+      getByUserId:
+        maxRetryAttemps: 5
+        waitDuration: 1s
+
+      getById:
+        maxRetryAttemps: 5
+        waitDuration: 1s
+
+      getAllNote:
+        maxRetryAttemps: 5
+        waitDuration: 1s

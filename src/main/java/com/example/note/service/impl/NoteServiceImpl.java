@@ -6,6 +6,7 @@ import com.example.note.entity.Note_User;
 import com.example.note.entity.User;
 import com.example.note.repository.NoteRepository;
 import com.example.note.service.NoteService;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    @Retry(name = "getAllNote",fallbackMethod = "getAllFallBack")
     public List<Note_User> getAll() {
         List<Note_User> listNE=new ArrayList<Note_User>();
         List<Note> list =repository.findAll();
@@ -44,19 +46,35 @@ public class NoteServiceImpl implements NoteService {
 
         return listNE;
     }
+    public List<Note_User> getAllFallBack(RuntimeException exception) {
+        List<Note_User> listNE=new ArrayList<Note_User>();
+        List<Note> list =repository.findAll();
+        for (Note e: list) {
+            Note_User nu= new Note_User(e);
+            listNE.add(nu);
+        }
+
+        return listNE;
+    }
+
 
     @Override
+    @Retry(name = "getByUserId")
     public List<Note> getByUserId(Long id, Pageable pageable) {
 
         return repository.findByUserIdOrderByUpdateAtDesc(id,pageable);
     }
 
     @Override
+    @Retry(name = "getById", fallbackMethod = "getByIdFallBack")
     public Note_User getById(Long id) {
-
        Note note =repository.findById(id).get();
        User u=  restTemplate.getForObject("/"+note.getUserId(),User.class);
         return new Note_User(note, u);
+    }
+    public Note_User getByIdFallBack(Long id, RuntimeException exception) {
+        Note note =repository.findById(id).get();
+        return new Note_User(note);
     }
 
     @Override
