@@ -12,3 +12,24 @@ resilience4j:
       getAllNote:
         maxRetryAttemps: 5
         waitDuration: 1s
+
+  ratelimiter:
+    instances:
+      getByUserId:
+        limitForPeriod: 1
+        limitRefreshPeriod: 3s
+        timeoutDuration: 2s
+      getById:
+        limitForPeriod: 1
+        limitRefreshPeriod: 3s
+        timeoutDuration: 2s
+      addNote:
+        limitForPeriod: 1
+        limitRefreshPeriod: 2s
+        timeoutDuration: 3s
+      getAll:
+        limitForPeriod: 1
+        limitRefreshPeriod: 3s
+        timeoutDuration: 3s
+
+

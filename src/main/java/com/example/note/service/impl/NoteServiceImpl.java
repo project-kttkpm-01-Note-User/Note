@@ -6,6 +6,7 @@ import com.example.note.entity.Note_User;
 import com.example.note.entity.User;
 import com.example.note.repository.NoteRepository;
 import com.example.note.service.NoteService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ public class NoteServiceImpl implements NoteService {
     private RestTemplate restTemplate;
 
     @Override
+    @RateLimiter(name = "addNote")
     public Note addNote(Note note) {
         note.setCreatedAt(new Date());
         note.setUpdateAt(new Date());
@@ -33,6 +35,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    @RateLimiter(name = "getAll")
     @Retry(name = "getAllNote",fallbackMethod = "getAllFallBack")
     public List<Note_User> getAll() {
         List<Note_User> listNE=new ArrayList<Note_User>();
@@ -60,12 +63,14 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Retry(name = "getByUserId")
+    @RateLimiter(name = "getByUserId")
     public List<Note> getByUserId(Long id, Pageable pageable) {
 
         return repository.findByUserIdOrderByUpdateAtDesc(id,pageable);
     }
 
     @Override
+    @RateLimiter(name = "getById")
     @Retry(name = "getById", fallbackMethod = "getByIdFallBack")
     public Note_User getById(Long id) {
        Note note =repository.findById(id).get();

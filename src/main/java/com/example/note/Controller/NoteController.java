@@ -4,6 +4,7 @@ import com.example.note.entity.Note;
 import com.example.note.entity.Note_User;
 import com.example.note.service.impl.NoteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class NoteController {
     private NoteServiceImpl service;
 
     @GetMapping
+    @Cacheable("getAllNote")
     public List<Note_User> getAll(){
         return service.getAll();
     }
@@ -26,6 +28,7 @@ public class NoteController {
         return service.addNote(note);
     }
     @GetMapping("/userId/{id}")
+    @Cacheable("getNoteByUser")
     public List<Note> getByUserId(@PathVariable Long id,@RequestParam int page,@RequestParam int limit){
         Pageable pageable= PageRequest.of(page-1, limit);
         return service.getByUserId(id,pageable);
