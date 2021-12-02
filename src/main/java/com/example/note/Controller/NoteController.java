@@ -50,7 +50,7 @@ public class NoteController {
         return service.getById(id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     @CacheEvict(cacheNames = {"getAllNote", "getNoteByUser","getById"}, allEntries = true)
     public String deleteNote(@PathVariable Long id){
         try {
