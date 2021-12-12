@@ -7,11 +7,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @Configuration
+@LoadBalence
 public class ConfigRestTemplate {
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate= new RestTemplate();
-        DefaultUriBuilderFactory builderFactory= new DefaultUriBuilderFactory("http://localhost:8080/users");
+        DefaultUriBuilderFactory builderFactory= new DefaultUriBuilderFactory("http://USER-SERVICE/users");
         restTemplate.setUriTemplateHandler(builderFactory);
         return restTemplate;
     }
