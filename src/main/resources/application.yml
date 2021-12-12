@@ -34,7 +34,7 @@ resilience4j:
 
 spring:
   application:
-    name: note-service
+    name: NOTE-SERVICE
 
 
 
